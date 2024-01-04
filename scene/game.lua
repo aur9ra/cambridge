@@ -80,8 +80,7 @@ function GameScene:onInputPress(e)
 		self.game:onExit()
 		scene = e.input == "retry" and GameScene(self.retry_mode, self.retry_ruleset, self.secret_inputs) or ModeSelectScene()
 	elseif e.input == "retry" then
-		switchBGM(nil)
-		pitchBGM(1)
+		stopBGM()
 		self.game:onExit()
 		scene = GameScene(self.retry_mode, self.retry_ruleset, self.secret_inputs)
 	elseif e.input == "pause" and not (self.game.game_over or self.game.completed) then
@@ -93,6 +92,7 @@ function GameScene:onInputPress(e)
 			resumeBGM()
 		end
 	elseif e.input == "menu_back" then
+		stopBGM()
 		self.game:onExit()
 		scene = ModeSelectScene()
 	elseif e.input and string.sub(e.input, 1, 5) ~= "menu_" then
@@ -109,7 +109,7 @@ end
 function submitHighscore(hash, data)
 	if not highscores[hash] then highscores[hash] = {} end
 	table.insert(highscores[hash], data)
-	saveHighscores()
+	createSav("highscores", highscores)
 end
 
 return GameScene

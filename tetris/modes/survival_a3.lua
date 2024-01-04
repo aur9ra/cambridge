@@ -11,6 +11,7 @@ SurvivalA3Game.name = "Survival A3"
 SurvivalA3Game.hash = "SurvivalA3"
 SurvivalA3Game.tagline = "The blocks turn black and white! Can you make it to level 1300?"
 
+SurvivalA3Game.music_slot_names = {"0-499", "500-699", "700-999", "1000-1300", "Roll"}
 
 function SurvivalA3Game:new()
 	SurvivalA3Game.super:new()
@@ -94,6 +95,21 @@ function SurvivalA3Game:getSkin()
 	return self.level >= 1000 and "bone" or "2tie"
 end
 
+function SurvivalA3Game:handleMusic()
+	if self.ready_frames ~= 0 then return end
+
+	if self.level >= 0 and self.level < 485 then playBgmByModeAndIndex(self.name, 1) end
+	if self.level >= 485 and self.level < 500 then fadeoutBGM(1) end
+	if self.level >= 500 and self.level < 685 then playBgmByModeAndIndex(self.name, 2) end
+	if self.level >= 685 and self.level < 700 then fadeoutBGM(1) end
+	if self.level >= 700 and self.level < 985 then playBgmByModeAndIndex(self.name, 3) end
+	if self.level >= 985 and self.level < 1000 then fadeoutBGM(1) end
+	if self.level >= 1000 and self.level < 1300 then playBgmByModeAndIndex(self.name, 4) end
+	if self.level >= 1300 then stopBGM() end
+
+	if self.clear then switchAndLoadBgmByName(self.name, 5) end
+end
+
 function SurvivalA3Game:hitTorikan(old_level, new_level)
 	if old_level < 500 and new_level >= 500 and self.frames > self.torikan_time then
 		self.level = 500
@@ -116,7 +132,7 @@ function SurvivalA3Game:advanceOneFrame()
 			end
 			return false
 		elseif self.roll_frames > 3238 then
-			switchBGM(nil)
+			stopBGM()
 			self.completed = true
 		end
 	elseif self.ready_frames == 0 then

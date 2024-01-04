@@ -111,8 +111,7 @@ function ReplayScene:onInputPress(e)
 		e.input == "menu_decide" or
 		e.input == "retry"
  	) then
-		switchBGM(nil)
-		pitchBGM(1)
+		stopBGM()
 		self.game:onExit()
 		loadSave()
 		love.math.setRandomSeed(os.time())
@@ -135,13 +134,11 @@ function ReplayScene:onInputPress(e)
 		if self.replay_speed < 1 then
 			self.replay_speed = 1
 		end
-		pitchBGM(self.replay_speed)
 	elseif e.input == "right" then
 		self.replay_speed = self.replay_speed + 1
 		if self.replay_speed > 99 then
 			self.replay_speed = 99
 		end
-		pitchBGM(self.replay_speed)
 	elseif e.input == "hold" then
 		self.show_invisible = not self.show_invisible
 	end

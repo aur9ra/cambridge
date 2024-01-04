@@ -142,7 +142,7 @@ function MarathonA3Game:advanceOneFrame()
 			else
 				self.roll_points = self.roll_points + 50
 			end
-			switchBGM(nil)
+			stopBGM()
 			self.completed = true
 		end
 	elseif self.ready_frames == 0 then

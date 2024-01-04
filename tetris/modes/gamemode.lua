@@ -16,6 +16,8 @@ GameMode.hash = ""
 GameMode.tagline = ""
 GameMode.rollOpacityFunction = function(age) return 0 end
 
+GameMode.music_slot_names = {}
+
 function GameMode:new()
 	self.replay_inputs = {}
 	self.random_low, self.random_high = love.math.getRandomSeed()
@@ -187,6 +189,8 @@ function GameMode:update(inputs, ruleset)
 		return
 	end
 
+	self:handleMusic()
+	
 	if config.gamesettings.diagonal_input == 2 then
 		if inputs["left"] or inputs["right"] then
 			inputs["up"] = false
@@ -374,6 +378,9 @@ function GameMode:advanceOneFrame()
 	end
 end
 
+-- bgm functions
+function GameMode:handleMusic() end
+
 -- event functions
 function GameMode:whilePieceActive() end
 function GameMode:onAttemptPieceMove(piece, grid) end
@@ -402,8 +409,7 @@ function GameMode:onHardDrop(dropped_row_count)
 end
 
 function GameMode:onGameOver()
-	switchBGM(nil)
-	pitchBGM(1)
+	stopBGM()
 	local alpha = 0
 	local animation_length = 120
 	if self.game_over_frames < animation_length then

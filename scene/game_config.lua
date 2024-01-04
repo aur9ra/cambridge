@@ -83,7 +83,7 @@ end
 function ConfigScene:onInputPress(e)
 	if e.input == "menu_decide" or e.scancode == "return" then
 		playSE("mode_decide")
-		saveConfig()
+		createSav("config", config)
 		scene = SettingsScene()
 	elseif e.input == "up" or e.scancode == "up" then
 		playSE("cursor")

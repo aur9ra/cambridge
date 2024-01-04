@@ -3,6 +3,7 @@ local binser = require 'libs.binser'
 function loadSave()
 	config = loadFromFile('config.sav')
 	highscores = loadFromFile('highscores.sav')
+	music_config = loadFromFile('music_config.sav')
 end
 
 function loadFromFile(filename)
@@ -43,14 +44,25 @@ function initConfig()
 	end
 end
 
-function saveConfig()
-	love.filesystem.write(
-		'config.sav', binser.serialize(config)
-	)
+function initMusicConfig()
+	if not music_config then music_config = {} end
 end
 
-function saveHighscores()
+function initMusicConfigForGameMode(game_mode_name, num_slots)
+	for key, _ in pairs(music_config) do
+		if key == game_mode_name then return end
+	end
+
+	slots_list = {}
+	for i = 1, num_slots do
+		slots_list[i] = {1, nil}
+	end
+	music_config[game_mode_name] = slots_list
+end
+
+function createSav(filename, obj)
+	print(filename)
 	love.filesystem.write(
-		'highscores.sav', binser.serialize(highscores)
+		filename .. '.sav', binser.serialize(obj)
 	)
 end

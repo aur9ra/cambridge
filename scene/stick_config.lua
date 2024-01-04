@@ -81,7 +81,7 @@ function StickConfigScene:onInputPress(e)
 				local had_config = config.input ~= nil
                 if not config.input then config.input = {} end
                 config.input.joysticks = self.new_input
-				saveConfig()
+				createSav("config", config)
 				scene = had_config and InputConfigScene() or TitleScene()
 			elseif e.scancode == "delete" or e.scancode == "backspace" then
 				-- retry

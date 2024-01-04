@@ -121,7 +121,7 @@ function PhantomMania2Game:advanceOneFrame()
 			end
 			return false
 		elseif self.roll_frames > 3238 then
-			switchBGM(nil)
+			stopBGM()
 			self.roll_points = self.level >= 1300 and self.roll_points + 150 or self.roll_points
 			self.grade = self.grade + math.floor(self.roll_points / 100)
 			self.completed = true

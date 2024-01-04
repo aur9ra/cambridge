@@ -124,7 +124,7 @@ function Survival2020Game:advanceOneFrame()
 			end
 			return false
 		elseif self.roll_frames > 3238 then
-			switchBGM(nil)
+			stopBGM()
 			self.completed = true
 		end
 	elseif self.ready_frames == 0 then

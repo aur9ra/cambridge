@@ -37,8 +37,6 @@ function ModeSelectScene:new()
 end
 
 function ModeSelectScene:update()
-	switchBGM(nil) -- experimental
-
 	if self.das_up or self.das_down then
 		self.das = self.das + 1
 	else
@@ -122,7 +120,7 @@ function ModeSelectScene:onInputPress(e)
 		config.current_mode = current_mode
 		config.current_ruleset = current_ruleset
 		playSE("mode_decide")
-		saveConfig()
+		
 		scene = GameScene(
 			game_modes[self.menu_state.mode],
 			rulesets[self.menu_state.ruleset],
@@ -140,6 +138,17 @@ function ModeSelectScene:onInputPress(e)
 		self:switchSelect()
 	elseif e.input == "menu_back" or e.scancode == "delete" or e.scancode == "backspace" then
 		scene = TitleScene()
+	elseif e.input == "hold" then
+		current_mode = self.menu_state.mode
+		current_ruleset = self.menu_state.ruleset
+		config.current_mode = current_mode
+		config.current_ruleset = current_ruleset
+		playSE("mode_decide")
+		createSav('config', config)
+
+		scene = MusicConfigScene(
+			game_modes[self.menu_state.mode]
+		)
 	elseif e.input then
 		self.secret_inputs[e.input] = true
 	end

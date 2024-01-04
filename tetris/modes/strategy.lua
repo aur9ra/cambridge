@@ -64,7 +64,7 @@ function StrategyGame:advanceOneFrame()
 	if self.clear then
 		self.roll_frames = self.roll_frames + 1
 		if self.roll_frames > 1936 then
-			switchBGM(nil)
+			stopBGM()
 			self.completed = true
 		end
 	elseif self.ready_frames == 0 then

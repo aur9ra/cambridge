@@ -30,6 +30,7 @@ function love.load()
 
 	-- init config
 	initConfig()
+	initMusicConfig()
 
 	love.window.setFullscreen(config["fullscreen"])
 	if config.secret then playSE("welcome") end
@@ -101,16 +102,16 @@ function love.keypressed(key, scancode)
 	-- global hotkeys
 	if scancode == "f11" then
 		config["fullscreen"] = not config["fullscreen"]
-		saveConfig()
+		createSav("config", config)
 		love.window.setFullscreen(config["fullscreen"])
 	elseif scancode == "f2" and scene.title ~= "Input Config" and scene.title ~= "Game" then
 		scene = InputConfigScene()
-		switchBGM(nil)
+		stopBGM()
 		loadSave()
 	-- secret sound playing :eyes:
 	elseif scancode == "f8" and scene.title == "Title" then
 		config.secret = not config.secret
-		saveConfig()
+		createSav("config", config)
 		scene.restart_message = true
 		if config.secret then playSE("mode_decide")
 		else playSE("erase", "single") end

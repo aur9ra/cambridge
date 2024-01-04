@@ -1,49 +1,46 @@
-bgm = {
-	credit_roll = {
-		gm3 = love.audio.newSource("res/bgm/tgm_credit_roll.mp3", "stream"),
-	},
-	pacer_test = love.audio.newSource("res/bgm/pacer_test.mp3", "stream"),
-}
+bgm = {}
+bgm_names = {}
+bgm_sources = {}
+
+bgm_files = love.filesystem.getDirectoryItems("res/bgm")
+
+for index, filename in ipairs(bgm_files) do
+	bgm_names[index] = filename
+	bgm_sources[filename] = love.audio.newSource("res/bgm/" .. filename, "stream")
+end
 
 local current_bgm = nil
-local pitch = 1
-local bgm_locked = false
+local bgm_playing = false
 
-function switchBGM(sound, subsound)
-	if bgm_locked then
-		return
-	end
-	if current_bgm ~= nil then
-		current_bgm:stop()
-	end
-	if config.bgm_volume <= 0 then
-		current_bgm = nil
-	elseif sound ~= nil then
-		if subsound ~= nil then
-			current_bgm = bgm[sound][subsound]
-		else
-			current_bgm = bgm[sound]
-		end
-	else
-		current_bgm = nil
-	end
-	if current_bgm ~= nil then
+function playBgmByModeAndIndex(game_mode_name, index)
+	new_bgm_name = music_config[game_mode_name][index][2]
+	if current_bgm ~= bgm_sources[new_bgm_name] then
+		-- make sure any formerly playing bgm does not continue to play
+		if current_bgm ~= nil then current_bgm:stop() end
+		current_bgm = bgm_sources[new_bgm_name]
+
+		-- reset fadeout, volume
 		resetBGMFadeout()
+		current_bgm:setVolume(config.bgm_volume)
+
+		current_bgm:play()
 	end
 end
 
-function switchBGMLoop(sound, subsound)
-	switchBGM(sound, subsound)
-	if current_bgm then current_bgm:setLooping(true) end
+function switchAndLoadBgmByName(name)
+	if current_bgm ~= bgm_sources[name] then
+		-- make sure any formerly playing bgm does not continue to play
+		if current_bgm ~= nil then current_bgm:stop() end
+		current_bgm = bgm_sources[name]
+
+		-- reset fadeout, volume
+		resetBGMFadeout()
+		current_bgm:setVolume(config.bgm_volume)
+
+		current_bgm:play()
+	end
 end
 
-function lockBGM()
-	bgm_locked = true
-end
-
-function unlockBGM()
-	bgm_locked = false
-end
 
 local fading_bgm = false
 local fadeout_time = 0
@@ -57,21 +54,22 @@ function fadeoutBGM(time)
 	end
 end
 
-function resetBGMFadeout(time)
+
+function resetBGMFadeout()
 	current_bgm:setVolume(config.bgm_volume)
 	fading_bgm = false
 	resumeBGM()
 end
 
+-- gradually decrease bgm volume, keep at 0 until new bgm is played or fadeout is reset. ran automatically.
 function processBGMFadeout(dt)
 	if current_bgm and fading_bgm then
 		fadeout_time = fadeout_time - dt
 		if fadeout_time < 0 then
 			fadeout_time = 0
-			fading_bgm = false
 		end
 		current_bgm:setVolume(
-			fadeout_time * config.bgm_volume / total_fadeout_time
+			(fadeout_time / total_fadeout_time) * config.bgm_volume
 		)
 	end
 end
@@ -82,16 +80,16 @@ function pauseBGM()
 	end
 end
 
+function stopBGM()
+	print("Stop bgm")
+	if current_bgm ~= nil then
+		current_bgm:stop()
+	end
+	current_bgm = nil
+end
+
 function resumeBGM()
 	if current_bgm ~= nil then
 		current_bgm:play()
-		current_bgm:setPitch(pitch)
-	end
-end
-
-function pitchBGM(new_pitch)
-	pitch = new_pitch
-	if current_bgm ~= nil then
-		current_bgm:setPitch(pitch)
 	end
 end
